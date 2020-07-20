@@ -2,7 +2,36 @@ const Koa = require('koa')
 const bodyParser = require('koa-bodyparser')
 const path = require('path')
 
+// const ws = require('nodejs-websocket')
+
+const websockify = require('koa-websocket')
 let app = new Koa
+/* ============================================= */
+const route = require('koa-route')
+app = websockify(app)
+app.ws.use(
+    route.all('/websocket', function (ctx, next) {
+        ctx.websocket.send("连接成功");
+        setInterval(() => {
+            ctx.websocket.send(JSON.stringify({
+                id: 11111111,
+                time: new Date().toLocaleString()
+            }));
+        }, 1000)
+    })
+)
+
+/* app.ws.use(route.all('/websocket', function (ctx) {
+    console.log("99999999999")
+    ctx.websocket.on('message', function (c) {
+        console.log(ctx);
+        console.log(c)
+        ctx.websocket.send('data');
+    })
+})); */
+
+/* ============================================= */
+
 
 /* 服务器渲染 配置 */
 const render = require('koa-art-template')
@@ -13,6 +42,8 @@ render(app, {
     extname: '.html',
     debug: process.env.NODE_ENV !== "production"
 })
+
+
 
 /* bodyParser 配置 */
 app.use(bodyParser());
