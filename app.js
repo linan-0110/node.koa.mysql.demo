@@ -44,7 +44,6 @@ render(app, {
 })
 
 
-
 /* bodyParser 配置 */
 app.use(bodyParser());
 
